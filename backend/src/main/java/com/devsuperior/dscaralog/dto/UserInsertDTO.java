@@ -1,5 +1,8 @@
 package com.devsuperior.dscaralog.dto;
 
+import com.devsuperior.dscaralog.services.validation.UserInsertValid;
+
+@UserInsertValid
 public class UserInsertDTO extends UserDTO{
 	private static final long serialVersionUID = 1L;
 	
