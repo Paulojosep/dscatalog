@@ -1,8 +1,12 @@
+import NavBar from './components/NavBar';
 import './App.css';
 
 function App() {
   return (
+    <>
+    <NavBar />
     <h1>Hello DSCatalog</h1>
+    </>
   );
 }
 
