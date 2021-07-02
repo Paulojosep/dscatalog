@@ -1,12 +1,9 @@
-import NavBar from './components/NavBar';
 import './App.css';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <>
-    <NavBar />
-    <h1>Hello DSCatalog</h1>
-    </>
+    <Home />
   );
 }
 
