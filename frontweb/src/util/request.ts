@@ -1,5 +1,5 @@
 import qs from 'qs';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 type LoginResponse = {
   access_token: string;
@@ -7,10 +7,11 @@ type LoginResponse = {
   expires_in: number;
   scope: string;
   userFirstName: string;
-  userId: number
-}
+  userId: number;
+};
 
-export const BASE_URL = process.env.REACT_APP_BACKEND_URL ?? 'http://localhost:8080';
+export const BASE_URL =
+  process.env.REACT_APP_BACKEND_URL ?? 'http://localhost:8080';
 
 const tokenKey = 'authData';
 
@@ -45,11 +46,22 @@ export const requestBackendLogin = (loginData: LoginData) => {
   });
 };
 
-export const saveAuthData = (obj : LoginResponse) => {
+export const requestBackend = (config: AxiosRequestConfig) => {
+  const headers = config.withCredentials
+    ? {
+        ...config.headers,
+        Authorization: 'Bearer ' + getAuthData().access_token,
+      }
+    : config.headers;
+
+  return axios({ ...config, baseURL: BASE_URL, headers });
+};
+
+export const saveAuthData = (obj: LoginResponse) => {
   localStorage.setItem(tokenKey, JSON.stringify(obj));
-}
+};
 
 export const getAuthData = () => {
-  const str = localStorage.getItem(tokenKey) ?? "{}";
+  const str = localStorage.getItem(tokenKey) ?? '{}';
   return JSON.parse(str) as LoginResponse;
-}
+};
