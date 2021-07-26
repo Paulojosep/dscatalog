@@ -1,14 +1,15 @@
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Router, Redirect, Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Admin from './pages/Admin';
 import Auth from './pages/Admin/Auth';
 import Catalog from './pages/Catalog';
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
+import history from './util/history';
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <Router history={history}>
       <NavBar />
       <Switch>
         <Route path="/" exact>
@@ -29,7 +30,7 @@ const Routes = () => {
           <Admin />
         </Route>
       </Switch>
-    </BrowserRouter>
+    </Router>
   );
 };
 
