@@ -1,8 +1,13 @@
 import { Link, useHistory } from 'react-router-dom';
 import ButtonIcon from '../../../../components/ButtonIcon';
 import { useForm } from 'react-hook-form';
-import { requestBackendLogin, saveAuthData, getAuthData } from '../../../../util/request';
-import { useState } from 'react';
+import {
+  getTokenData,
+  requestBackendLogin,
+  saveAuthData,
+} from '../../../../util/request';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../../../AuthContext';
 import './styles.css';
 
 type FormData = {
@@ -11,9 +16,15 @@ type FormData = {
 };
 
 const Login = () => {
+  const { setAuthContextData } = useContext(AuthContext);
+
   const [hasError, setHasError] = useState(false);
 
-  const { register, handleSubmit, formState: {errors} } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
 
   const history = useHistory();
 
@@ -21,10 +32,11 @@ const Login = () => {
     requestBackendLogin(formData)
       .then((response) => {
         saveAuthData(response.data);
-        const token = getAuthData().access_token;
-        console.log('TOKEN GERADO: ' + token);
         setHasError(false);
-        console.log('SUCESSO', response);
+        setAuthContextData({
+          authenticated: true,
+          tokenData: getTokenData(),
+        });
         history.push('/admin');
       })
       .catch((error) => {
@@ -36,7 +48,7 @@ const Login = () => {
   return (
     <div className="base-card login-card">
       <h1>LOGIN</h1>
-      { hasError && (
+      {hasError && (
         <div className="alert alert-danger">
           Error ao tentar efetuar o login
         </div>
@@ -48,27 +60,35 @@ const Login = () => {
               required: 'Campo obrigatorio',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Email inválido'
-              }
+                message: 'Email inválido',
+              },
             })}
             type="text"
-            className={`form-control base-input ${errors.username ? 'is-invalid' : ''}`}
+            className={`form-control base-input ${
+              errors.username ? 'is-invalid' : ''
+            }`}
             placeholder="Email"
             name="username"
           />
-          <div className="invalid-feedback d-block">{errors.username?.message}</div>
+          <div className="invalid-feedback d-block">
+            {errors.username?.message}
+          </div>
         </div>
         <div className="mb-2">
           <input
             {...register('password', {
-              required: 'Campo obrigatorio'
+              required: 'Campo obrigatorio',
             })}
             type="password"
-            className={`form-control base-input ${errors.password ? 'is-invalid' : ''}`}
+            className={`form-control base-input ${
+              errors.password ? 'is-invalid' : ''
+            }`}
             placeholder="Password"
             name="password"
           />
-          <div className="invalid-feedback d-block">{errors.password?.message}</div>
+          <div className="invalid-feedback d-block">
+            {errors.password?.message}
+          </div>
         </div>
         <Link to="/admin/auth/recover" className="login-link-recover">
           Esqueci a senha
