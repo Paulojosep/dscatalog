@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import ProductCard from '../../../../components/ProductCard';
+import ProductCrudCard from '../ProductCrudCard';
 import './styles.css';
 
 const List = () => {
@@ -32,13 +32,13 @@ const List = () => {
       </div>
       <div className="row">
         <div className="col-sm-6 col-md-12">
-          <ProductCard product={product} />
+          <ProductCrudCard product={product} />
         </div>
         <div className="col-sm-6 col-md-12">
-          <ProductCard product={product} />
+          <ProductCrudCard product={product} />
         </div>
         <div className="col-sm-6 col-md-12">
-          <ProductCard product={product} />
+          <ProductCrudCard product={product} />
         </div>
       </div>
     </>
