@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../../../../components/Pagination';
+import ProductFilter from '../../../../components/ProductFilter';
 import { Product } from '../../../../types/product';
 import { SpringPage } from '../../../../types/vendor/spring';
 import { requestBackend } from '../../../../util/request';
@@ -50,7 +51,7 @@ const List = () => {
             ADICIONAR
           </button>
         </Link>
-        <div className="base-card product-filter-container">Search Bar</div>
+        <ProductFilter />
       </div>
       <div className="row">
         {page?.content.map((product) => (
