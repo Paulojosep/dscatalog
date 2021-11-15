@@ -2,7 +2,9 @@ import { AxiosRequestConfig } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../../../../components/Pagination';
-import ProductFilter from '../../../../components/ProductFilter';
+import ProductFilter, {
+  ProductFilterData,
+} from '../../../../components/ProductFilter';
 import { Product } from '../../../../types/product';
 import { SpringPage } from '../../../../types/vendor/spring';
 import { requestBackend } from '../../../../util/request';
@@ -11,6 +13,7 @@ import './styles.css';
 
 type ControlComponentsData = {
   activePage: number;
+  filterData: ProductFilterData;
 };
 
 const List = () => {
@@ -19,10 +22,15 @@ const List = () => {
   const [controlComponentData, setControlComponentData] =
     useState<ControlComponentsData>({
       activePage: 0,
+      filterData: { name: '', category: null },
     });
 
   const handlePageChange = (pageNumber: number) => {
-    setControlComponentData({ activePage: pageNumber });
+    setControlComponentData({ activePage: pageNumber, filterData: controlComponentData.filterData });
+  };
+
+  const handleSubmitFilter = (data: ProductFilterData) => {
+    setControlComponentData({ activePage: 0, filterData: data });
   };
 
   const getProducts = useCallback(() => {
@@ -32,8 +40,11 @@ const List = () => {
       params: {
         page: controlComponentData.activePage,
         size: 3,
+        name: controlComponentData.filterData.name,
+        categoryId: controlComponentData.filterData.category?.id
       },
     };
+
     requestBackend(config).then((response) => {
       setPage(response.data);
     });
@@ -51,7 +62,7 @@ const List = () => {
             ADICIONAR
           </button>
         </Link>
-        <ProductFilter />
+        <ProductFilter onSubmitFilter={handleSubmitFilter} />
       </div>
       <div className="row">
         {page?.content.map((product) => (
@@ -61,6 +72,7 @@ const List = () => {
         ))}
       </div>
       <Pagination
+        forcePage={page?.number}
         pageCount={page ? page.totalPages : 0}
         range={3}
         onChanges={handlePageChange}

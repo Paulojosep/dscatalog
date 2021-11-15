@@ -1,33 +1,29 @@
 import { useState, useEffect } from 'react';
 import Select from 'react-select';
-import {
-  Controller,
-  useForm,
-} from '../../../node_modules/react-hook-form';
+import { Controller, useForm } from '../../../node_modules/react-hook-form';
 import { ReactComponent as SearchIcon } from '../../assets/images/search-icon.svg';
 import { Category } from '../../types/category';
 import { requestBackend } from '../../util/request';
 
 import './styles.css';
 
-type ProductFilterData = {
+export type ProductFilterData = {
   name: string;
   category: Category | null;
 };
 
-const ProductFilter = () => {
+type Props = {
+  onSubmitFilter: (data: ProductFilterData) => void;
+};
+
+const ProductFilter = ({ onSubmitFilter }: Props) => {
   const [selectCategories, setSelectCategories] = useState<Category[]>([]);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    control,
-  } = useForm<ProductFilterData>();
+  const { register, handleSubmit, setValue, getValues, control } =
+    useForm<ProductFilterData>();
 
   const onSubmit = (formData: ProductFilterData) => {
-    console.log('ENVIOU', formData);
+    onSubmitFilter(formData);
   };
 
   const handleFormClear = () => {
@@ -40,11 +36,11 @@ const ProductFilter = () => {
 
     const obj: ProductFilterData = {
       name: getValues('name'),
-      category: getValues('category')
-    }
+      category: getValues('category'),
+    };
 
-    console.log('ENVIOU', obj);
-  }
+    onSubmitFilter(obj);
+  };
 
   useEffect(() => {
     requestBackend({ url: '/categories' }).then((response) => {
@@ -63,7 +59,7 @@ const ProductFilter = () => {
             placeholder="Nome do Produto"
             name="name"
           />
-          <button className='product-filter-search-icon'>
+          <button className="product-filter-search-icon">
             <SearchIcon />
           </button>
         </div>
@@ -79,14 +75,19 @@ const ProductFilter = () => {
                   isClearable
                   placeholder="Categoria"
                   classNamePrefix="product-filter-select"
-                  onChange={value => handleChangeCategory(value as Category)}
+                  onChange={(value) => handleChangeCategory(value as Category)}
                   getOptionLabel={(category: Category) => category.name}
                   getOptionValue={(category: Category) => String(category.id)}
                 />
               )}
             />
           </div>
-          <button onClick={handleFormClear} className="btn btn-outline-secondary btn-product-filter-clear">LIMPAR <span className='btn-product-filter-word'>FILTRO</span></button>
+          <button
+            onClick={handleFormClear}
+            className="btn btn-outline-secondary btn-product-filter-clear"
+          >
+            LIMPAR <span className="btn-product-filter-word">FILTRO</span>
+          </button>
         </div>
       </form>
     </div>
