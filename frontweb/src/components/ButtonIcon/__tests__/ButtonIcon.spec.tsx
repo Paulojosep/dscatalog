@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ButtonIcon from '..';
+import ButtonIcon from '../index';
 
 test('ButtonIcon shoul render button with given text', () => {
   const text = 'Fazer login';
