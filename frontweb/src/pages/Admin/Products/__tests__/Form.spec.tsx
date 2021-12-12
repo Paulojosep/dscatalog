@@ -72,4 +72,39 @@ describe('Product form create tests', () => {
         expect(messages).toHaveLength(5);
     })
   });
+
+  test('Should clear validation messages when filling out the form correctly', async () => {
+    render(
+      <Router history={history}>
+        <Form />
+      </Router>
+    );
+
+    const submitButton = screen.getByRole('button', {name: /salvar/i});
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+        const messages = screen.getAllByText('Campo obrigatorio');
+        expect(messages).toHaveLength(5);
+    });
+
+    const nameInput = screen.getByTestId("name");
+    const priceInput = screen.getByTestId("price");
+    const imgUrlInput = screen.getByTestId("imgUrl");
+    const descriptionInput = screen.getByTestId("description");
+    const categoriesInput = screen.getByLabelText("Categorias");
+
+    await selectEvent.select(categoriesInput, ['Eletrônicos', 'Computadores']);
+    userEvent.type(nameInput, 'Computador');
+    userEvent.type(priceInput, '5000.12');
+    userEvent.type(imgUrlInput, 'https://avatars.githubusercontent.com/u/38318472?s=400&u=7bdad8c514fb2265977d0363561840f9d1050ebc&v=4');
+    userEvent.type(descriptionInput, 'Computador muito bom');
+
+    await waitFor(() => {
+        const messages = screen.queryAllByText('Campo obrigatorio');
+        expect(messages).toHaveLength(0);
+    });
+
+  });
 });
