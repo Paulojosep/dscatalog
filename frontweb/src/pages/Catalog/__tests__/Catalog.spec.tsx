@@ -2,6 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import Catalog from '../index';
 import history from '../../../util/history';
+import { server } from './fixtures';
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 test('shoul render Catalog with given products', async () => {
 
@@ -14,6 +19,6 @@ test('shoul render Catalog with given products', async () => {
   expect(screen.getByText('Catálogo de produtos')).toBeInTheDocument();
   
   await waitFor(() => {
-      expect(screen.getByText("Smart TV")).toBeInTheDocument();
+      expect(screen.getByText("PC Gamer")).toBeInTheDocument();
   });
 });
